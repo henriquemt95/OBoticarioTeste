@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    platform: linux/x86_64 # Required property for run on Macbook with M1 Processor
+    image: mysql:8.0.26
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: boticario
+      MYSQL_USER: boticario
+      MYSQL_PASSWORD: boticario
+    ports:
+      - '3306:3306'
+    networks:
+      - boticario-network
+    volumes:
+      - ./prisma/init:/docker-entrypoint-initdb.d
+
+  integration-tests:
+    container_name: laas_security_integration_tests
+    platform: linux/x86_64 # Required property for run on Macbook with M1 Processor
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: integration-tests
+    environment:
+      DATABASE_URL: 'mysql://boticario:boticario@mysqldb:3306/boticario'
+      O_BOTICARIO_CASHBACK_API_TOKEN: 'ZXPURQOARHiMc6Y0flhRC1LVlZQVFRnm'
+      O_BOTICARIO_CASHBACK_API_URL: 'https://mdaqk8ek5j.execute-api.us-east-1.amazonaws.com/v1/cashback?cpf={cpf}'
+      JWT_SECRET: 'jwt_secret'
+      PORT: 5503
+    ports:
+      - '5503:5503'
+    networks:
+      - boticario-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - mysqldb
+
+  development:
+    container_name: boticario_development
+    platform: linux/x86_64
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    environment:
+      DATABASE_URL: 'mysql://boticario:boticario@mysqldb:3306/boticario'
+      O_BOTICARIO_CASHBACK_API_TOKEN: 'ZXPURQOARHiMc6Y0flhRC1LVlZQVFRnm'
+      O_BOTICARIO_CASHBACK_API_URL: 'https://mdaqk8ek5j.execute-api.us-east-1.amazonaws.com/v1/cashback?cpf={cpf}'
+      JWT_SECRET: 'jwt_secret'
+      PORT: 5503
+    ports:
+      - '5503:5503'
+    networks:
+      - boticario-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - mysqldb
+
+  production:
+    container_name: boticario_prod
+    platform: linux/x86_64 # Required property for run on Macbook with M1 Processor
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    environment:
+      DATABASE_URL: 'mysql://nestjs:nestjs@mysqldb:3306/security'
+      O_BOTICARIO_CASHBACK_API_TOKEN: 'ZXPURQOARHiMc6Y0flhRC1LVlZQVFRnm'
+      O_BOTICARIO_CASHBACK_API_URL: 'https://mdaqk8ek5j.execute-api.us-east-1.amazonaws.com/v1/cashback?cpf={cpf}'
+      JWT_SECRET: 'jwt_secret'
+      PORT: 8080
+    ports:
+      - '8080:8080'
+    networks:
+      - boticario-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - mysqldb
+
+networks:
+  boticario-network:

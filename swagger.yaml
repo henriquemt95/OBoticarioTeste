@@ -1,0 +1,210 @@
+openapi: 3.0.0
+paths:
+  /user/register:
+    post:
+      operationId: UserController_register
+      summary: Endpoint para cadastro de novo usuário
+      description: Endpoint para cadastro de novo usuário
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '201':
+          description: User created with success
+        '400':
+          description: Parametros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorException'
+      tags: &ref_0
+        - User
+  /user/login:
+    post:
+      operationId: UserController_login
+      summary: Endpoint para login de usuário
+      description: Endpoint para login de usuário
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequestDto'
+      responses:
+        '200':
+          description: Login success
+        '400':
+          description: Parametros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorException'
+      tags: *ref_0
+  '/cashback/accumulated/{cpf}':
+    get:
+      operationId: CashbackController_getAccumulatedCashbackByAuthenticatedUser
+      summary: Rota para exibir o acumulado de cashback até o momento por cpf
+      description: Rota para exibir o acumulado de cashback até o momento por cpf
+      parameters:
+        - name: cpf
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User created with success
+        '400':
+          description: Parametros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorException'
+      tags:
+        - Cashback
+  /purchases:
+    post:
+      operationId: PurchaseController_newPurchase
+      summary: Endpoint para cadastro de compras realizadas
+      description: Endpoint para cadastro de compras realizadas
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPurchaseDto'
+      responses:
+        '201':
+          description: Purchase created with success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseCreatedDto'
+        '400':
+          description: Parametros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorException'
+      tags: &ref_1
+        - Purchases
+    get:
+      operationId: PurchaseController_purchaseByAuthenticatedUser
+      summary: Endpoint para listagem de compras realizadas
+      description: Endpoint para listagem de compras realizadas
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Parametros inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestException'
+        '500':
+          description: Erro no servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerErrorException'
+      tags: *ref_1
+info:
+  title: O Boticário API
+  description: API para o gerenciamento de vendas e usuários O Boticário
+  version: '1.0'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    UserDto:
+      type: object
+      properties:
+        email:
+          type: string
+        name:
+          type: string
+        cpf:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - name
+        - cpf
+        - password
+    BadRequestException:
+      type: object
+      properties: {}
+    InternalServerErrorException:
+      type: object
+      properties: {}
+    LoginRequestDto:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    NewPurchaseDto:
+      type: object
+      properties:
+        code:
+          type: string
+        cpf_user:
+          type: string
+        value:
+          type: string
+        status:
+          type: string
+      required:
+        - code
+        - cpf_user
+        - value
+        - status
+    PurchaseCreatedDto:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message

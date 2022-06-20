@@ -1,8 +1,8 @@
-import { IsString } from 'class-validator';
+import { IsString, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginRequestDto {
-  @IsString()
+  @IsEmail()
   @ApiProperty()
   email: string;
 

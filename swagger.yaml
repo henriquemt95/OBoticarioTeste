@@ -5,7 +5,12 @@ paths:
       operationId: UserController_register
       summary: Endpoint para cadastro de novo usuário
       description: Endpoint para cadastro de novo usuário
-      parameters: []
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -43,7 +48,7 @@ paths:
               $ref: '#/components/schemas/LoginRequestDto'
       responses:
         '200':
-          description: Login success
+          description: Login efetuado com sucesso
         '400':
           description: Parametros inválidos
           content:
@@ -57,20 +62,24 @@ paths:
               schema:
                 $ref: '#/components/schemas/InternalServerErrorException'
       tags: *ref_0
-  '/cashback/accumulated/{cpf}':
+  /cashback/accumulated:
     get:
       operationId: CashbackController_getAccumulatedCashbackByAuthenticatedUser
       summary: Rota para exibir o acumulado de cashback até o momento por cpf
       description: Rota para exibir o acumulado de cashback até o momento por cpf
       parameters:
-        - name: cpf
+        - name: token
+          in: header
           required: true
-          in: path
           schema:
             type: string
       responses:
         '200':
-          description: User created with success
+          description: Seu cashback acumulado é de x reais
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashbackAccumulatedResponsetDto'
         '400':
           description: Parametros inválidos
           content:
@@ -90,7 +99,12 @@ paths:
       operationId: PurchaseController_newPurchase
       summary: Endpoint para cadastro de compras realizadas
       description: Endpoint para cadastro de compras realizadas
-      parameters: []
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -122,7 +136,12 @@ paths:
       operationId: PurchaseController_purchaseByAuthenticatedUser
       summary: Endpoint para listagem de compras realizadas
       description: Endpoint para listagem de compras realizadas
-      parameters: []
+      parameters:
+        - name: token
+          in: header
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -185,22 +204,29 @@ components:
       required:
         - email
         - password
+    CashbackAccumulatedResponsetDto:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
     NewPurchaseDto:
       type: object
       properties:
+        date:
+          type: string
         code:
           type: string
         cpf_user:
           type: string
         value:
           type: string
-        status:
-          type: string
       required:
+        - date
         - code
         - cpf_user
         - value
-        - status
     PurchaseCreatedDto:
       type: object
       properties:

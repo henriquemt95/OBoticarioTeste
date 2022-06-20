@@ -5,8 +5,8 @@ export class NewPurchaseDto {
   @IsOptional()
   id?: number;
 
-  @IsOptional()
   @IsString()
+  @ApiProperty()
   date: string;
 
   @IsString()
@@ -22,6 +22,6 @@ export class NewPurchaseDto {
   value: string;
 
   @IsString()
-  @ApiProperty()
+  @IsOptional()
   status: string;
 }

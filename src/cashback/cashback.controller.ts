@@ -1,31 +1,25 @@
 import { CashbackService } from './cashback.service';
 import {
   Controller,
-  Post,
+  Headers,
   HttpCode,
   BadRequestException,
   InternalServerErrorException,
   Get,
-  Param,
 } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiParam,
-} from '@nestjs/swagger';
-import { CashbackAccumulatedRequestDto } from './dto/cashback-accumulated-request';
-import { isValidCPF } from 'src/utils/utils';
+import { ApiOperation, ApiTags, ApiResponse, ApiHeader } from '@nestjs/swagger';
+import { CashbackAccumulatedResponsetDto } from './dto/cashback-accumulated-response';
 
 @ApiTags('Cashback')
 @Controller()
 export class CashbackController {
   constructor(private readonly cashbackService: CashbackService) {}
-  @Get('/cashback/accumulated/:cpf')
+  @Get('/cashback/accumulated')
   @HttpCode(200)
   @ApiResponse({
     status: 200,
-    description: 'User created with success',
+    description: 'Seu cashback acumulado é de x reais',
+    type: CashbackAccumulatedResponsetDto,
   })
   @ApiResponse({
     status: 400,
@@ -37,22 +31,25 @@ export class CashbackController {
     description: 'Erro no servidor',
     type: InternalServerErrorException,
   })
-  @ApiParam({ name: 'cpf' })
+  @ApiHeader({ name: 'token', required: true })
   @ApiOperation({
     summary: 'Rota para exibir o acumulado de cashback até o momento por cpf',
-    description: 'Rota para exibir o acumulado de cashback até o momento por cpf',
+    description:
+      'Rota para exibir o acumulado de cashback até o momento por cpf',
   })
   async getAccumulatedCashbackByAuthenticatedUser(
-    @Param() paramPath: CashbackAccumulatedRequestDto,
-  ): Promise<string> {
+    @Headers() headers,
+  ): Promise<CashbackAccumulatedResponsetDto> {
     try {
-      const { cpf } = paramPath;
-      if (!isValidCPF(cpf)) {
-        throw new Error('CPF inválido!');
-      }
-      return this.cashbackService.getAccumulatedCashbackByCpf(cpf);
+      const { token } = headers;
+      const cashback = await this.cashbackService.getAccumulatedCashbackByCpf(
+        token,
+      );
+      return {
+        message: `Seu cashback acumulado é de ${cashback} reais`,
+      };
     } catch (error) {
-      console.log(error);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

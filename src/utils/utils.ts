@@ -1,3 +1,6 @@
+import * as moment from 'moment';
+import { format } from 'path';
+
 export const isValidCPF = (cpf) => {
   if (typeof cpf !== 'string') return false;
   cpf = cpf.replace(/[^\d]+/g, '');
@@ -11,4 +14,12 @@ export const isValidCPF = (cpf) => {
       11) %
     10;
   return rest(10) === cpf[9] && rest(11) === cpf[10];
+};
+
+export const isValidDate = (date) => {
+  return moment(date, 'YYYY-MM-DD', true).isValid();
+};
+
+export const formatDateForDatabase = (date: string) => {
+  return moment(date).toISOString();
 }

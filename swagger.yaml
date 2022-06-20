@@ -6,7 +6,7 @@ paths:
       summary: Endpoint para cadastro de novo usuário
       description: Endpoint para cadastro de novo usuário
       parameters:
-        - name: token
+        - name: authorization_token
           in: header
           required: true
           schema:
@@ -68,7 +68,7 @@ paths:
       summary: Rota para exibir o acumulado de cashback até o momento por cpf
       description: Rota para exibir o acumulado de cashback até o momento por cpf
       parameters:
-        - name: token
+        - name: authorization_token
           in: header
           required: true
           schema:
@@ -100,7 +100,7 @@ paths:
       summary: Endpoint para cadastro de compras realizadas
       description: Endpoint para cadastro de compras realizadas
       parameters:
-        - name: token
+        - name: authorization_token
           in: header
           required: true
           schema:
@@ -137,7 +137,7 @@ paths:
       summary: Endpoint para listagem de compras realizadas
       description: Endpoint para listagem de compras realizadas
       parameters:
-        - name: token
+        - name: authorization_token
           in: header
           required: true
           schema:

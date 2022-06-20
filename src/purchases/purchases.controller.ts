@@ -6,12 +6,20 @@ import {
   BadRequestException,
   InternalServerErrorException,
   Body,
+  UseGuards,
 } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
-import { ApiOperation, ApiTags, ApiResponse, ApiBody, ApiHeader } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiBody,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { NewPurchaseDto } from './dto/new-purchase.dto';
 import { PurchaseCreatedDto } from './dto/purchase-created-response';
 import { isValidCPF, isValidDate } from '../utils/utils';
+import { AuthGuard } from '../auth.guard';
 
 @ApiTags('Purchases')
 @Controller()
@@ -19,6 +27,8 @@ export class PurchaseController {
   constructor(private readonly purchaseService: PurchaseService) {}
 
   @Post('/purchases')
+  @ApiHeader({ name: 'authorization_token', required: true })
+  @UseGuards(AuthGuard)
   @HttpCode(201)
   @ApiResponse({
     status: 201,
@@ -35,7 +45,6 @@ export class PurchaseController {
     description: 'Erro no servidor',
     type: InternalServerErrorException,
   })
-  @ApiHeader({ name: 'token', required: true })
   @ApiBody({ type: NewPurchaseDto })
   @ApiOperation({
     summary: 'Endpoint para cadastro de compras realizadas',
@@ -65,6 +74,8 @@ export class PurchaseController {
   }
 
   @Get('/purchases')
+  @ApiHeader({ name: 'authorization_token', required: true })
+  @UseGuards(AuthGuard)
   @HttpCode(201)
   @ApiResponse({
     status: 200,
@@ -84,7 +95,6 @@ export class PurchaseController {
     summary: 'Endpoint para listagem de compras realizadas',
     description: 'Endpoint para listagem de compras realizadas',
   })
-  @ApiHeader({ name: 'token', required: true })
   purchaseByAuthenticatedUser(): string {
     return this.purchaseService.purchaseByAuthenticatedUser();
   }

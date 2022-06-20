@@ -6,14 +6,22 @@ import {
   InternalServerErrorException,
   Body,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { LoginRequestDto } from './dto/login-request';
 import { LoginResponseDto } from './dto/login-response';
 import { UserDto } from './dto/user';
 import { UserCreatedDto } from './dto/user-created-response';
 import { UserService } from './user.service';
-import { ApiOperation, ApiTags, ApiResponse, ApiBody, ApiHeader } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiBody,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { isValidCPF } from 'src/utils/utils';
+import { AuthGuard } from '../auth.guard';
 
 @ApiTags('User')
 @Controller()
@@ -21,6 +29,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/user/register')
+  @ApiHeader({ name: 'authorization_token', required: true })
+  @UseGuards(AuthGuard)
   @HttpCode(201)
   @ApiResponse({
     status: 201,
@@ -36,7 +46,6 @@ export class UserController {
     description: 'Erro no servidor',
     type: InternalServerErrorException,
   })
-  @ApiHeader({ name: 'token', required: true })
   @ApiBody({ type: UserDto })
   @ApiOperation({
     summary: 'Endpoint para cadastro de novo usuário',

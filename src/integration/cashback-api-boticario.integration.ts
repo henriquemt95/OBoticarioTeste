@@ -11,9 +11,10 @@ export class CashbackApiIntegration {
   ) {}
 
   getCashBackByCpf(cpf: string): any {
-    const url = this.configService.getCashbackApiOBoticarioUrl().replace("{cpf}", cpf);
+    const url = this.configService
+      .getCashbackApiOBoticarioUrl()
+      .replace('{cpf}', cpf);
     const token = this.configService.getCashbackApiOBoticarioToken();
-    console.log(JSON.stringify(url))
     const request$ = this.httpService.get(url, {
       headers: { token },
     });

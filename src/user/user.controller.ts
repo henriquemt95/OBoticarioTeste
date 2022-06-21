@@ -87,14 +87,17 @@ export class UserController {
   })
   @ApiBody({ type: LoginRequestDto })
   async login(@Body() user: LoginRequestDto): Promise<LoginResponseDto> {
-    let idUser = null;
+    let foundUser = null;
     try {
-      idUser = await this.userService.validateUser(user.email, user.password);
+      foundUser = await this.userService.validateUser(
+        user.email,
+        user.password,
+      );
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
-    if (idUser) {
-      return this.userService.login(user.email, idUser);
+    if (foundUser) {
+      return this.userService.login(foundUser.email, foundUser.id);
     }
     throw new UnauthorizedException('Usuário ou senha inválido(a)');
   }

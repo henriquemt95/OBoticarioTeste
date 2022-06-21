@@ -7,6 +7,7 @@ import {
   InternalServerErrorException,
   Body,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { PurchaseService } from './purchase.service';
 import {
@@ -18,8 +19,9 @@ import {
 } from '@nestjs/swagger';
 import { NewPurchaseDto } from './dto/new-purchase.dto';
 import { PurchaseCreatedDto } from './dto/purchase-created-response';
-import { isValidCPF, isValidDate } from '../utils/utils';
+import { formatDateDMY, isValidCPF, isValidDate } from '../utils/utils';
 import { AuthGuard } from '../auth.guard';
+import { PurchaseResponse } from './dto/purchase-list-response';
 
 @ApiTags('Purchases')
 @Controller()
@@ -76,10 +78,11 @@ export class PurchaseController {
   @Get('/purchases')
   @ApiHeader({ name: 'authorization_token', required: true })
   @UseGuards(AuthGuard)
-  @HttpCode(201)
+  @HttpCode(200)
   @ApiResponse({
     status: 200,
     description: 'Success',
+    type: PurchaseResponse,
   })
   @ApiResponse({
     status: 400,
@@ -95,7 +98,22 @@ export class PurchaseController {
     summary: 'Endpoint para listagem de compras realizadas',
     description: 'Endpoint para listagem de compras realizadas',
   })
-  purchaseByAuthenticatedUser(): string {
-    return this.purchaseService.purchaseByAuthenticatedUser();
+  async purchaseByAuthenticatedUser(
+    @Headers() headers,
+  ): Promise<PurchaseResponse[]> {
+    const [, token] = headers.authorization_token.split(' ');
+    const purchases = await this.purchaseService.purchaseByAuthenticatedUser(
+      token,
+    );
+    return purchases.map((purchase) => {
+      return {
+        code: purchase.code,
+        percent_cashback: `${purchase.cashback}%`,
+        value: purchase.value,
+        value_cashback: (purchase.cashback / 100) * Number(purchase.value),
+        status: purchase.status,
+        date: formatDateDMY(purchase.date),
+      };
+    });
   }
 }

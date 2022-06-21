@@ -24,6 +24,7 @@ model Purchases {
   value    String
   cpf_user String
   status   String
+  cashback Int 
 }
 
 model Log {

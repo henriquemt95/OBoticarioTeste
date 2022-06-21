@@ -145,6 +145,10 @@ paths:
       responses:
         '200':
           description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseResponse'
         '400':
           description: Parametros inválidos
           content:
@@ -234,3 +238,22 @@ components:
           type: string
       required:
         - message
+    PurchaseResponse:
+      type: object
+      properties:
+        code:
+          type: string
+        value:
+          type: string
+        date:
+          type: string
+        percent_cashback:
+          type: string
+        value_cashback:
+          type: number
+      required:
+        - code
+        - value
+        - date
+        - percent_cashback
+        - value_cashback

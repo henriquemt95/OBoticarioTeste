@@ -20,6 +20,10 @@ export const isValidDate = (date) => {
   return moment(date, 'YYYY-MM-DD', true).isValid();
 };
 
+export const formatDateDMY = (date) => {
+  return moment(date).format('DD/MM/YYYY').toString();
+};
+
 export const formatDateForDatabase = (date: string) => {
   return moment(date).toISOString();
 }

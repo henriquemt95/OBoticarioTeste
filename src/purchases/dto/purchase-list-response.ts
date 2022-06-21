@@ -1,9 +1,14 @@
 import { IsString, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class NewPurchaseDto {
-  @IsOptional()
-  id?: number;
+export class PurchaseResponse {
+  @IsString()
+  @ApiProperty()
+  code: string;
+
+  @IsString()
+  @ApiProperty()
+  value: string;
 
   @IsString()
   @ApiProperty()
@@ -11,21 +16,13 @@ export class NewPurchaseDto {
 
   @IsString()
   @ApiProperty()
-  code: string;
+  percent_cashback: string;
 
-  @IsString()
+  @IsNumber()
   @ApiProperty()
-  cpf_user: string;
-
-  @IsString()
-  @ApiProperty()
-  value: string;
+  value_cashback: number;
 
   @IsString()
   @IsOptional()
   status: string;
-
-  @IsNumber()
-  @IsOptional()
-  cashback: number;
 }

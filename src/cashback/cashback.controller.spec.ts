@@ -54,11 +54,6 @@ describe('CashbackController', () => {
 
   afterAll(async () => {
     await truncateTables(prismaService);
-    await prismaService.user.delete({
-      where: {
-        email: 'henriqueteste@gmail.com',
-      },
-    });
     await app.close();
   });
 

@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
   mysqldb:
-    platform: linux/x86_64 # Required property for run on Macbook with M1 Processor
     image: mysql:8.0.26
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -41,7 +40,6 @@ services:
 
   development:
     container_name: boticario_development
-    platform: linux/x86_64 # Required property for run on Macbook with M1 Processor
     build:
       context: .
       dockerfile: Dockerfile

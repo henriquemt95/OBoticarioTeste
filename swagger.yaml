@@ -5,7 +5,12 @@ paths:
       operationId: UserController_register
       summary: Endpoint para cadastro de novo usuário
       description: Endpoint para cadastro de novo usuário
-      parameters: []
+      parameters:
+        - name: authorization_token
+          in: header
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:

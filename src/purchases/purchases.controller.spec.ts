@@ -55,68 +55,60 @@ describe('PurchaseController', () => {
 
   afterAll(async () => {
     await truncateTables(prismaService);
-    await prismaService.user.delete({
-      where: {
-        email: 'henriqueteste@gmail.com',
-      },
-    });
-
-    await prismaService.purchases.deleteMany({
-      where: {
-        code: '123455',
-      },
-    });
     await app.close();
   });
 
-  it('should not return accumulated cashback without access token by invalid user', async () => {
-    const purchaseController = app.get<PurchaseController>(PurchaseController);
 
-    const body = {
-      date: '2022-06-22',
-      code: '123455',
-      cpf_user: '12820981607',
-      value: '1',
-      status: null,
-      cashback: null,
-    };
-
-    let expectedReturn;
-    try {
-      expectedReturn = await purchaseController.newPurchase(body);
-    } catch (error) {
-      expectedReturn = error.message;
-    }
-    expect(expectedReturn).toBe(
-      'O CPF do usuário informado na compra não foi encontrado!',
-    );
-  });
-
-  it('should not return accumulated cashback without access token by invalid user', async () => {
-    const purchaseController = app.get<PurchaseController>(PurchaseController);
-
-    const body = {
-      date: '2022-06-22',
-      code: '123455',
-      cpf_user: '63787426000',
-      value: '1',
-      status: null,
-      cashback: null,
-    };
-
-    let expectedReturn;
-    try {
-      expectedReturn = await purchaseController.newPurchase(body);
-    } catch (error) {
-      expectedReturn = error.message;
-    }
-    expect(expectedReturn).toStrictEqual({
-      message: 'Compra criada com sucesso',
-    });
-  });
 
   describe('accumulated cashback', () => {
-    it('should return accumulated cashback with access token', async () => {
+
+    it('should not create new purchase with invalid cpf', async () => {
+      const purchaseController = app.get<PurchaseController>(PurchaseController);
+  
+      const body = {
+        date: '2022-06-22',
+        code: '123455',
+        cpf_user: '12820981607',
+        value: '1',
+        status: null,
+        cashback: null,
+      };
+  
+      let expectedReturn;
+      try {
+        expectedReturn = await purchaseController.newPurchase(body);
+      } catch (error) {
+        expectedReturn = error.message;
+      }
+      expect(expectedReturn).toBe(
+        'O CPF do usuário informado na compra não foi encontrado!',
+      );
+    });
+  
+    it('should create new purchase with success', async () => {
+      const purchaseController = app.get<PurchaseController>(PurchaseController);
+  
+      const body = {
+        date: '2022-06-22',
+        code: '123455',
+        cpf_user: '63787426000',
+        value: '1',
+        status: null,
+        cashback: null,
+      };
+  
+      let expectedReturn;
+      try {
+        expectedReturn = await purchaseController.newPurchase(body);
+      } catch (error) {
+        expectedReturn = error.message;
+      }
+      expect(expectedReturn).toStrictEqual({
+        message: 'Compra criada com sucesso',
+      });
+    });
+
+    it('should return purchase for authenticated user with cashback information', async () => {
       const purchaseController =
         app.get<PurchaseController>(PurchaseController);
 
@@ -149,7 +141,7 @@ describe('PurchaseController', () => {
       ]);
     });
 
-    it('should not return accumulated cashback without access token by invalid user', async () => {
+    it('should not create new purchase with invalid cpf in body request', async () => {
       const purchaseController =
         app.get<PurchaseController>(PurchaseController);
 

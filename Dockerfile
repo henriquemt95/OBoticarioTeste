@@ -5,8 +5,8 @@ RUN npm i
 COPY . .
 RUN rm -rf .env
 RUN npx prisma generate
-RUN npx prisma db push
 RUN npm run build
+
 
 FROM builder AS integration-tests
 WORKDIR /usr/src/app

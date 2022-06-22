@@ -15,14 +15,28 @@ services:
     volumes:
       - ./prisma/init:/docker-entrypoint-initdb.d
 
-  integration-tests:
-    container_name: laas_security_integration_tests
+  mysqldbtest:
+    image: mysql:8.0.26
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: boticariotest
+      MYSQL_USER: boticariotest
+      MYSQL_PASSWORD: boticariotest
+    ports:
+      - '3306:3306'
+    networks:
+      - boticario-network
+    volumes:
+      - ./prisma/init:/docker-entrypoint-initdb.d
+
+  unit-tests:
+    container_name: boticario_unit_tests
     build:
       context: .
       dockerfile: Dockerfile
-      target: integration-tests
+      target: unit-tests
     environment:
-      DATABASE_URL: 'mysql://boticario:boticario@mysqldb:3306/boticario'
+      DATABASE_URL: 'mysql://boticariotest:boticariotest@mysqldbtest:3306/boticariotest'
       O_BOTICARIO_CASHBACK_API_TOKEN: 'ZXPURQOARHiMc6Y0flhRC1LVlZQVFRnm'
       O_BOTICARIO_CASHBACK_API_URL: 'https://mdaqk8ek5j.execute-api.us-east-1.amazonaws.com/v1/cashback?cpf={cpf}'
       JWT_SECRET: 'jwt_secret'
@@ -36,7 +50,7 @@ services:
       - /usr/src/app/node_modules
     restart: unless-stopped
     depends_on:
-      - mysqldb
+      - mysqldbtest
 
   development:
     container_name: boticario_development

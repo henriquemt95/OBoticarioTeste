@@ -43,14 +43,14 @@ describe('PurchaseController', () => {
     await truncateTables(prismaService);
 
     await prismaService.user.create({
-      data: {
-        email: 'henriqueteste@gmail.com',
-        name: 'henrique',
-        cpf: '63787426000',
-        password:
-          '$2b$10$O5ZPAoMiPVFPyvShQDj3o.SO0I/uNhlqWMVgylBcFyppg8bV8p5aO',
-      },
-    });
+        data: {
+          email: 'henriquetestes@gmail.com',
+          name: 'henrique',
+          cpf: '12820981607',
+          password:
+            '$2b$10$O5ZPAoMiPVFPyvShQDj3o.SO0I/uNhlqWMVgylBcFyppg8bV8p5aO',
+        },
+      });
   });
 
   afterAll(async () => {
@@ -58,22 +58,20 @@ describe('PurchaseController', () => {
     await app.close();
   });
 
-
-
   describe('accumulated cashback', () => {
-
     it('should not create new purchase with invalid cpf', async () => {
-      const purchaseController = app.get<PurchaseController>(PurchaseController);
-  
+      const purchaseController =
+        app.get<PurchaseController>(PurchaseController);
+
       const body = {
         date: '2022-06-22',
         code: '123455',
-        cpf_user: '12820981607',
+        cpf_user: '47331356615',
         value: '1',
         status: null,
         cashback: null,
       };
-  
+
       let expectedReturn;
       try {
         expectedReturn = await purchaseController.newPurchase(body);
@@ -84,19 +82,20 @@ describe('PurchaseController', () => {
         'O CPF do usuário informado na compra não foi encontrado!',
       );
     });
-  
+
     it('should create new purchase with success', async () => {
-      const purchaseController = app.get<PurchaseController>(PurchaseController);
-  
+      const purchaseController =
+        app.get<PurchaseController>(PurchaseController);
+
       const body = {
         date: '2022-06-22',
         code: '123455',
-        cpf_user: '63787426000',
+        cpf_user: '12820981607',
         value: '1',
         status: null,
         cashback: null,
       };
-  
+
       let expectedReturn;
       try {
         expectedReturn = await purchaseController.newPurchase(body);
@@ -115,7 +114,7 @@ describe('PurchaseController', () => {
       const userController = app.get<UserController>(UserController);
 
       const { access_token } = await userController.login({
-        email: 'henriqueteste@gmail.com',
+        email: 'henriquetestes@gmail.com',
         password: '0210',
       });
       const header = { authorization_token: `bearer ${access_token}` };
@@ -128,7 +127,6 @@ describe('PurchaseController', () => {
       } catch (error) {
         expectedReturn = error.message;
       }
-      console.log(JSON.stringify(expectedReturn));
       expect(expectedReturn).toStrictEqual([
         {
           code: '123455',

@@ -12,11 +12,9 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const authorizationHeader = this.getAuthorizationHeader(context);
-    console.log({authorizationHeader})
     if (!authorizationHeader) return false;
 
     const [, token] = authorizationHeader.split(' ');
-    console.log({token})
     if (!token) return false;
 
     try {

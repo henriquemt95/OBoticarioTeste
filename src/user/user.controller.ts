@@ -29,8 +29,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('/user/register')
-  @ApiHeader({ name: 'authorization_token', required: true })
-  @UseGuards(AuthGuard)
+  // @ApiHeader({ name: 'authorization_token', required: true }) 
+  // @UseGuards(AuthGuard)
   @HttpCode(201)
   @ApiResponse({
     status: 201,

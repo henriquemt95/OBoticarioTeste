@@ -8,7 +8,7 @@ RUN npx prisma generate
 RUN npm run build
 
 
-FROM builder AS integration-tests
+FROM builder AS unit-tests
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app .
 EXPOSE 8080

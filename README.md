@@ -37,7 +37,7 @@ $ docker-compose up -d development
 
 ```bash
 # unit tests
-$ npm run test
+$  docker-compose up --exit-code-from=unit-tests  --timeout=600 unit-tests
 ```
 
 ## Support

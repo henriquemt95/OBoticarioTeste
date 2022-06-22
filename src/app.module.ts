@@ -8,7 +8,7 @@ import { UserController } from './user/user.controller';
 import { PrismaClient } from '@prisma/client';
 import { CashbackApiIntegration } from './integration/cashback-api-boticario.integration';
 import { HttpModule } from '@nestjs/axios';
-import { AppConfigService } from './config/service/app-config.service';
+import { AppConfigService } from './ConfigModule/service/app-config.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 

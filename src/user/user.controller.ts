@@ -20,7 +20,7 @@ import {
   ApiBody,
   ApiHeader,
 } from '@nestjs/swagger';
-import { isValidCPF } from 'src/utils/utils';
+import { isValidCPF } from '../utils/utils';
 import { AuthGuard } from '../auth.guard';
 
 @ApiTags('User')

@@ -7,8 +7,7 @@ import {
 } from './constants/purchases.constants';
 import { NewPurchaseDto } from './dto/new-purchase.dto';
 import * as moment from 'moment';
-import { CashbackService } from 'src/cashback/cashback.service';
-import { copyFile } from 'fs';
+import { CashbackService } from '../cashback/cashback.service';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -23,6 +22,10 @@ export class PurchaseService {
     const user = await this.prismaService.user.findUnique({
       where: { cpf: purchase.cpf_user },
     });
+
+    if(!user){
+      throw new Error("O CPF do usuário informado na compra não foi encontrado!")
+    }
 
     if (user.isAdmin) {
       // para o cpf 153.509.460-56 não ficar HardCode e sim parametrizável pelo banco!

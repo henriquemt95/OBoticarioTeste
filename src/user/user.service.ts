@@ -28,11 +28,13 @@ export class UserService {
     const user = await this.prismaService.user.findUnique({
       where: { email: emailParam },
     });
+
     if (!user) {
       return null;
     }
     const hash = user.password;
     const isMatch = await bcrypt.compare(password, hash);
+
     if (isMatch) {
       return user;
     }

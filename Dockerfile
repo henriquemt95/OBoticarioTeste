@@ -8,6 +8,12 @@ RUN npx prisma generate
 RUN npx prisma db push
 RUN npm run build
 
+FROM builder AS integration-tests
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app .
+EXPOSE 8080
+CMD ["sh", "./test/start-unit-test-dockerfile.sh"]
+
 FROM builder AS development
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app .

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma/client';
-import { CashbackApiIntegration } from 'src/integration/cashback-api-boticario.integration';
+import { CashbackApiIntegration } from '../integration/cashback-api-boticario.integration';
 
 @Injectable()
 export class CashbackService {

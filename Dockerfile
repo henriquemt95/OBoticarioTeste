@@ -18,4 +18,4 @@ FROM builder AS development
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app .
 EXPOSE 8080
-CMD ["npm", "run", "start:dev"]
+CMD ["sh", "./start-development-dockerfile.sh"]
